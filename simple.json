@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "intA": {
+      "type": "int",
+      "defaultValue": 1
+    },
+    "intB": {
+      "type": "int",
+      "defaultValue": 4
+    }
+  },
+  "resources": [],
+  "outputs": {
+    "sum": {
+      "type": "int",
+      "value": "[add(parameters('intA'),parameters('intB'))]"
+    }
+  }
+}

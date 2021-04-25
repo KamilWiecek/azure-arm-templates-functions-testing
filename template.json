@@ -1,0 +1,123 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {},
+    "functions": [
+        {
+            "namespace": "nameValidation",
+            "members": {
+                "validateNameWithSeperator": {
+                    "parameters": [
+                        {
+                            "name": "rgName",
+                            "type": "string"
+                        }
+                    ],
+                    "output": {
+                        "value": "[if(
+                                    equals(parameters('rgName'), toLower(parameters('rgName') ) ),
+                                    if(
+                                        equals(length(split(parameters('rgName'), '-') ), 5),
+                                        if(
+                                            equals(split(parameters('rgName'), '-')[0],'pre'),
+                                            if(
+                                                not(empty(split(parameters('rgName'), '-')[1])),
+                                                if(
+                                                    contains(createArray('dev','tst','prd'), split(parameters('rgName'), '-')[2]),
+                                                    if(
+                                                        contains(createArray('we','ne'), split(parameters('rgName'), '-')[3]),
+                                                        if(
+                                                            equals(length(split(parameters('rgName'), '-')[4]), 1),
+                                                            if(
+                                                                empty(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(split(parameters('rgName'),'-')[4],'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','') ),
+                                                                'isValid',
+                                                                'hasNonNumericSuffix'
+                                                            ),
+                                                            'hasWrongSuffixLength'
+                                                        ),
+                                                        'hasWrongLocation'
+                                                    ),
+                                                    'hasWrongEnvironment'
+                                                ),
+                                                'hasNotWorkloadName'
+                                            ),
+                                            'hasWrongPrefix'
+                                        ),
+                                        'hasNotFourDashSeparators'
+                                    ),
+                                    'isNotLowercase')]",
+                        "type": "string"
+                    }
+                },
+                "validateNameWithoutSeperator": {
+                    "parameters": [
+                        {
+                            "name": "stName",
+                            "type": "string"
+                        }
+                    ],
+                    "output": {
+                        "value": "[if(
+                                    equals(parameters('stName'), toLower(parameters('stName') ) ),
+                                    if(
+                                        greater(length(parameters('stName') ), 7),
+                                        if(
+                                            startsWith(parameters('stName'),'pr'),
+                                              if(
+                                                    empty(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(substring(parameters('stName'), sub(length(parameters('stName')), 2), 2),'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','') ),
+                                                    if(
+                                                        contains(createArray('dev','tst','prd'), substring(parameters('stName'), sub(length(parameters('stName')), 5), 3)),
+                                                        'isValid',
+                                                        'hasWrongEnvironment'
+                                                    ),
+                                                    'hasWrongSuffix'
+                                                ),
+                                            'hasWrongPrefix'
+                                        ),
+                                        'hasNotWorkloadNameOrWrongSuffixOrWrongPrefix'
+                                    ),
+                                    'isNotLowercase')]",
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    ],
+    "variables": {
+        "properNamesWithSeperators": "[createArray('pre-network-tst-we-0','pre-vm001-prd-ne-9','pre-platformops-tst-ne-1')]",
+        "wrongNamesWithSeperators": "[createArray('PRE-NAME-tst-WE-0','prename-dev-ne-1','pre-network-tst-ab-0','pretest','pre-a-b-a-001','pre-dksops-uat-ne-1','pre-dksops-tst-ne-a','pre-dksops-tst-ne-01','pre--tst-ne-1', 'pre----','erp-name-tst-ne-99')]",
+        "properNamesWithoutSeperators": "[createArray('prokdev01', 'prplatformopstst99','prxprd01')]",
+        "wrongNamesWithoutSeperators": "[createArray('pRokdev01','prdev01','wrongprefixdev01','prnamedev1','prwrongsuffixdevaa','prwrongsuffix2','prnoenv999')]"
+    },
+    "resources": [],
+    "outputs": {
+        "properNamesWithSeperatorsValidation": {
+            "type": "array",
+            "copy": {
+                "count": "[length(variables('properNamesWithSeperators'))]",
+                "input": "[nameValidation.validateNameWithSeperator(variables('properNamesWithSeperators')[copyIndex()])]"
+            }
+        },
+        "wrongNamesWithSeperatorsValidation": {
+            "type": "array",
+            "copy": {
+                "count": "[length(variables('wrongNamesWithSeperators'))]",
+                "input": "[nameValidation.validateNameWithSeperator(variables('wrongNamesWithSeperators')[copyIndex()])]"
+            }
+        },
+        "properNamesWithoutSeperatorsValidation": {
+            "type": "array",
+            "copy": {
+                "count": "[length(variables('properNamesWithoutSeperators'))]",
+                "input": "[nameValidation.validateNameWithoutSeperator(variables('properNamesWithoutSeperators')[copyIndex()])]"
+            }
+        },
+        "wrongNamesWithoutSeperatorsValidation": {
+            "type": "array",
+            "copy": {
+                "count": "[length(variables('wrongNamesWithoutSeperators'))]",
+                "input": "[nameValidation.validateNameWithoutSeperator(variables('wrongNamesWithoutSeperators')[copyIndex()])]"
+            }
+        }
+    }
+}

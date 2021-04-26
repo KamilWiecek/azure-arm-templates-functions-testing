@@ -17,5 +17,6 @@ steps:
     subscriptionId: '5578079a-44a7-4dc6-8207-241eb89bb75b'
     location: 'West Europe'
     templateLocation: 'Linked artifact'
-    csmFile: '.\template.json'
+    csmFile: 'template.json'
     deploymentMode: 'Incremental'
+    

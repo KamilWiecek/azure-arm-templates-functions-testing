@@ -1,0 +1,33 @@
+trigger:
+- main
+
+variables:
+- name: templatePath
+  value: 'template.json'
+- name: convertedTemplatePath
+  value: 'convertedTemplate.json'
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- task: PowerShell@2
+  displayName: convert-template-before-deployment
+  inputs:
+    targetType: 'inline'
+    script: |
+      $template = Get-Content -Path '$(templatePath)'
+      $template -join '' | Out-File -FilePath '$(convertedTemplatePath)'
+
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: deploy-arm-template
+  inputs:
+    deploymentScope: 'Subscription'
+    azureResourceManagerConnection: 'sub-shared-1 (5578079a-44a7-4dc6-8207-241eb89bb75b)'
+    subscriptionId: '5578079a-44a7-4dc6-8207-241eb89bb75b'
+    location: 'West Europe'
+    templateLocation: 'Linked artifact'
+    csmFile: '$(convertedTemplatePath)'
+    deploymentMode: 'Incremental'
+    

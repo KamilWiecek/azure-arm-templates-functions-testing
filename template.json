@@ -9,27 +9,27 @@
                 "validateNameWithSeperator": {
                     "parameters": [
                         {
-                            "name": "rgName",
+                            "name": "name",
                             "type": "string"
                         }
                     ],
                     "output": {
                         "value": "[if(
-                                    equals(parameters('rgName'), toLower(parameters('rgName') ) ),
+                                    equals(parameters('name'), toLower(parameters('name') ) ),
                                     if(
-                                        equals(length(split(parameters('rgName'), '-') ), 5),
+                                        equals(length(split(parameters('name'), '-') ), 5),
                                         if(
-                                            equals(split(parameters('rgName'), '-')[0],'pre'),
+                                            equals(split(parameters('name'), '-')[0],'pre'),
                                             if(
-                                                not(empty(split(parameters('rgName'), '-')[1])),
+                                                not(empty(split(parameters('name'), '-')[1])),
                                                 if(
-                                                    contains(createArray('dev','tst','prd'), split(parameters('rgName'), '-')[2]),
+                                                    contains(createArray('dev','tst','prd'), split(parameters('name'), '-')[2]),
                                                     if(
-                                                        contains(createArray('we','ne'), split(parameters('rgName'), '-')[3]),
+                                                        contains(createArray('we','ne'), split(parameters('name'), '-')[3]),
                                                         if(
-                                                            equals(length(split(parameters('rgName'), '-')[4]), 1),
+                                                            equals(length(split(parameters('name'), '-')[4]), 1),
                                                             if(
-                                                                empty(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(split(parameters('rgName'),'-')[4],'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','') ),
+                                                                empty(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(split(parameters('name'),'-')[4],'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','') ),
                                                                 'isValid',
                                                                 'hasNonNumericSuffix'
                                                             ),
@@ -52,21 +52,21 @@
                 "validateNameWithoutSeperator": {
                     "parameters": [
                         {
-                            "name": "stName",
+                            "name": "name",
                             "type": "string"
                         }
                     ],
                     "output": {
                         "value": "[if(
-                                    equals(parameters('stName'), toLower(parameters('stName') ) ),
+                                    equals(parameters('name'), toLower(parameters('name') ) ),
                                     if(
-                                        greater(length(parameters('stName') ), 7),
+                                        greater(length(parameters('name') ), 7),
                                         if(
-                                            startsWith(parameters('stName'),'pr'),
+                                            startsWith(parameters('name'),'pr'),
                                               if(
-                                                    empty(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(substring(parameters('stName'), sub(length(parameters('stName')), 2), 2),'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','') ),
+                                                    empty(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(substring(parameters('name'), sub(length(parameters('name')), 2), 2),'0',''),'1',''),'2',''),'3',''),'4',''),'5',''),'6',''),'7',''),'8',''),'9','') ),
                                                     if(
-                                                        contains(createArray('dev','tst','prd'), substring(parameters('stName'), sub(length(parameters('stName')), 5), 3)),
+                                                        contains(createArray('dev','tst','prd'), substring(parameters('name'), sub(length(parameters('name')), 5), 3)),
                                                         'isValid',
                                                         'hasWrongEnvironment'
                                                     ),
